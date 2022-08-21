@@ -163,18 +163,21 @@
       const authorWrapper = article.querySelector(optAtticleAuthorSelector);
       console.log(authorWrapper);
 
-      /* get author from data-author attribute */
-      const dataTag = article.getAttribute('data-author');
-      console.log(dataTag);
+      /* get author href from data-author attribute */
+      const dataAuthorHref = article.getAttribute('data-author');
+      console.log(dataAuthorHref);
+
+      /*get author from author href*/
+      const dataAuthor = dataAuthorHref.replace('-', ' ');
+      console.log(dataAuthor);
 
       /* generate HTML of the authorWrapper to variable html*/
-      const authorHtml = 'by '+dataTag;
+      const authorHtml = 'by <a href=#'+dataAuthorHref+'">'+dataAuthor+'</a>';
       console.log(authorHtml);
 
       /* insert HTML of all the authors into the author wrapper */
       authorWrapper.innerHTML = authorHtml;
       console.log(authorWrapper);
-
 
       /* END LOOP: for every article: */
     }
