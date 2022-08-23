@@ -61,6 +61,59 @@
     }
   };
 
+  const calculateTagsParams = function (tags){
+
+    // MY IDEA:
+    // const values = Object.values(tags);
+    // const min = Math.min(...values);
+    // const max = Math.max(...values);
+    // return {min, max};
+
+    const params = {min:9999, max:0};
+
+    for (let tag in tags){
+      params.max = Math.max(tags[tag], params.max);
+      params.min = Math.min(tags[tag], params.min);
+    }
+    return params;
+
+
+    // SHORT IF
+    // const params = {min:999999, max:0};
+    // for (let tag in tags){
+    //   params.max = params.max > tags[tag] ? params.max : tags[tag];
+    //   params.min = params.min < tags[tag] ? params.min : tags[tag];
+
+    // }
+    // return params;
+
+
+    // LOOP FOR IN
+    // const params = {min: 999999, max: 0};
+    // for (let tag in tags){
+    //   if (tags[tag] < params.min) {
+    //     params.min = tags[tag];
+    //   }
+    //   if(tags[tag] > params.max){
+    //     params.max = tags[tag];
+    //   }
+    // }
+    // return params;
+  };
+
+  const calculateTagClass = function(count, params){
+    /*calculate difference between params max & params min */
+    const rangePossibleReapeat = params.max - params.min;
+
+    /*calculate count minus minimum params */
+    const numerator = count - params.min;
+
+    /*calculate scope of class tag number */
+    const result = numerator/rangePossibleReapeat * (optCloudClassCount - 1)+ 1;
+    return Math.round(result);
+  };
+
+
 
   const generateTags = () =>{
     /* [NEW] create a new variable allTags with an empty object */
@@ -97,30 +150,42 @@
         } else {
           allTags[articleTag]++;
         }
-
         /* END LOOP: for each tag */
       }
 
       /* insert HTML of all the links into the tags wrapper */
       tagsWrapper.innerHTML = tagHtml;
+
       /* END LOOP: for every article: */
     }
-    console.log(allTags);
-    console.log(allTags['design']);
     /* [NEW] find list of tags in right column */
     const tagList = document.querySelector(optTagsListSelector);
 
     /* [NEW] create variable for all links HTML code */
     let allTagsHTML = '';
+    const tagsParams = calculateTagsParams(allTags);
+    console.log(tagsParams);
+
+
 
     /* [NEW] START LOOP: for each tag in allTags: */
+
     for (let articleTag in allTags){
 
+      const tagClasses = calculateTagClass(allTags[articleTag],tagsParams);
+      console.log('class', tagClasses);
+
       /* [NEW] generate code of a link and add it to allTagsHTML */
-      allTagsHTML += '<li><a href="tag-'+articleTag+'">'+ articleTag+'</a>('+allTags[articleTag]+')</li>';
+      allTagsHTML += '<li><a class ="'+ optCloudClassPrefix + tagClasses+'"href="tag-'+articleTag+'">'+ articleTag+'</a></li>';
     }
+
+
     tagList.innerHTML = allTagsHTML;
+    console.log(tagList);
+    console.log(allTags);
+    console.log(allTags.design);
   };
+
 
 
 
@@ -262,7 +327,9 @@
     optTitleListSelector = '.titles',
     optArticleTagsSelector = '.post-tags .list',
     optAtticleAuthorSelector = '.post-author .list',
-    optTagsListSelector = '.tags.list';
+    optTagsListSelector = '.tags.list',
+    optCloudClassCount = 5,
+    optCloudClassPrefix = 'tag-size-';
 
 
   generateTitleLinks();
