@@ -23,7 +23,6 @@
 
     /* [DONE] get 'href' attribute from the clicked link */
     const hrefAtribute = clickedElement.getAttribute('href');
-    console.log(hrefAtribute);
 
     /* [DONE] find the correct article using the selector (value of 'href' attribute) */
     const activePost = document.getElementById(hrefAtribute);
@@ -164,7 +163,6 @@
     /* [NEW] create variable for all links HTML code */
     let allTagsHTML = '';
     const tagsParams = calculateTagsParams(allTags);
-    console.log(tagsParams);
 
 
 
@@ -173,7 +171,6 @@
     for (let articleTag in allTags){
 
       const tagClasses = calculateTagClass(allTags[articleTag],tagsParams);
-      console.log('class', tagClasses);
 
       /* [NEW] generate code of a link and add it to allTagsHTML */
       allTagsHTML += '<li><a class ="'+ optCloudClassPrefix + tagClasses+'"href="tag-'+articleTag+'">'+ articleTag+'</a></li>';
@@ -181,9 +178,7 @@
 
 
     tagList.innerHTML = allTagsHTML;
-    console.log(tagList);
-    console.log(allTags);
-    console.log(allTags.design);
+
   };
 
 
@@ -204,7 +199,6 @@
 
     /* find all links in main with class active */
     const activeLinks = document.querySelectorAll('main a.active' );
-    console.log(activeLinks);
 
     /* START LOOP: for each active tag link */
     for (let activeLink of activeLinks){
@@ -216,7 +210,6 @@
 
     /* find all tag links with "href" attribute equal to the "href" constant */
     const tagsHref = document.querySelectorAll('[href="' + hrefAtribute + '"]');
-    console.log(tagsHref);
 
     /* START LOOP: for each found tag link */
     for (let tagHref of tagsHref){
@@ -244,6 +237,10 @@
 
 
   const generateAuthors = () => {
+    /* [NEW] create a new variable allAuthors with an empty object */
+    const allAuthors = {};
+
+
     /* find all articles */
     const articles = document.querySelectorAll(optArticleSelector);
 
@@ -264,27 +261,55 @@
       /* insert HTML of all the authors into the author wrapper */
       authorWrapper.innerHTML = authorHtml;
 
+      /* [NEW] check if this author is NOT already in allAuthors */
+      if(!allAuthors[dataAuthor]) {
+        /* [NEW] add author to allAuthors object */
+        allAuthors[dataAuthor] = 1;
+      } else {
+        allAuthors[dataAuthor]++;
+      }
       /* END LOOP: for every article: */
     }
+    /*[NEW] Create empty variable for innerHTML content with author list*/
+    let authorListHTMLLinks = '';
+
+    /*[NEW] Start loop for every author in allAuthors*/
+    for (let author in allAuthors){
+
+      const authorData = author.replace(' ', '-');
+
+      /*[NEW] create link for author list in right sidebar */
+      const authorListHtmlLink = '<li><a href=author-'+authorData+'>'+author+'</a>('+allAuthors[author]+')</li>';
+
+      /*[NEW] Create author list inner HTML code*/
+      authorListHTMLLinks += authorListHtmlLink;
+    }
+    /*[NEW]  find author list in right sidebar*/
+    const authorList = document.querySelector(optAuthorListSelector);
+
+    /*[NEW] put author list links into right sidebar */
+    authorList.innerHTML = authorListHTMLLinks;
+
+    console.log(authorList);
+
+
   };
+
   const authorClickHandler = function (event){
     /* prevent default action for this event */
     event.preventDefault();
 
     /* make new constant named "clickedElement" and give it the value of "this" */
     const clickedElement  = this;
-    console.log(clickedElement);
 
     /* make a new constant "href" and read the attribute "href" of the clicked element */
     const hrefAuthor = clickedElement.getAttribute('href');
-    console.log('href from clicked element '+hrefAuthor);
 
-    /* make a new constant "author" and extract tag from the "href" constant */
+    /* make a new constant "author" and extract author from the "href" constant */
     const author = hrefAuthor.substring(7);
 
     /* find all links in main with class active */
     const activeLinks = document.querySelectorAll('main a.active' );
-    console.log(activeLinks);
 
 
     /* START LOOP: for each active tag link */
@@ -327,9 +352,11 @@
     optTitleListSelector = '.titles',
     optArticleTagsSelector = '.post-tags .list',
     optAtticleAuthorSelector = '.post-author .list',
+    optAuthorListSelector = '.list.authors',
     optTagsListSelector = '.tags.list',
     optCloudClassCount = 5,
     optCloudClassPrefix = 'tag-size-';
+
 
 
   generateTitleLinks();
