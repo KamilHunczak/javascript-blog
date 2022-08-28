@@ -210,6 +210,7 @@
         className: calculateTagClass(allTags[articleTag], tagsParams),
         href: articleTag
       });
+      console.log(allTagsData);
     }
 
     tagList.innerHTML = templates.tagCloudLink(allTagsData);
